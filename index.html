@@ -198,101 +198,155 @@
         font-size: 2.5rem;
       }
     }
+    .lang-button {
+      background: none;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
+<!-- Navbar -->
 <div class="navbar">
-  <div class="navbar-title">Secure Access Panel</div>
-  <button class="menu-button" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+  <div class="navbar-title" data-en="Secure Access Panel" data-hi="सुरक्षित पहुँच पैनल">BJP Party Software</div>
+  <div>
+   <!-- <button class="lang-button" onclick="toggleLanguage()">हिन्दी</button> -->
+<button class="menu-button" onclick="toggleSidebar()">
+  <i class="fas fa-bars" id="menu-icon"></i>
+  <i class="fas fa-times" id="close-icon" style="display:none;"></i>
+</button>
+  </div>
 </div>
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
-  <a href="#" onclick="switchTab('admin')">Admin</a>
-  <a href="#" onclick="switchTab('executive')">Executive</a>
+  <a href="#" onclick="switchTab('admin')" data-en="Admin" data-hi="प्रशासक">Admin</a>
+  <a href="#" onclick="switchTab('executive')" data-en="Executive" data-hi="कार्यकारी">Executive</a>
+   <a href="#">Policy Page</a> 
 </div>
 
-  <!-- Main Content -->
-  <div class="main">
-    <div>
-      <div class="tabs">
-        <button class="tab-button active" onclick="switchTab('admin')">Admin</button>
-        <button class="tab-button" onclick="switchTab('executive')">Executive</button>
-      </div>
+<!-- Main Content -->
+<div class="main">
+  <div>
+    <div class="tabs">
+      <button class="tab-button active" onclick="switchTab('admin')" data-en="Admin" data-hi="प्रशासक">Admin</button>
+      <button class="tab-button" onclick="switchTab('executive')" data-en="Executive" data-hi="कार्यकारी">Executive</button>
+    </div>
 
-      <!-- Admin Card -->
-      <div class="card active admin" id="admin">
-        <i class="fas fa-user-shield" style="color: #e67e22;"></i>
-        <h2>Admin Access</h2>
-        <p>Enter your secure admin code (e.g., A100).</p>
-        <input type="text" id="adminCode" class="input" placeholder="A100" />
-        <button class="button" onclick="checkCode('admin')"><i class="fas fa-check-circle"></i> Verify</button>
-      </div>
+    <!-- Admin Card -->
+    <div class="card active admin" id="admin">
+      <i class="fas fa-user-shield" style="color: #e67e22;"></i>
+      <h2 data-en="Admin Access" data-hi="प्रशासक प्रवेश">Admin Access</h2>
+      <p data-en="Enter your secure admin code (e.g., A100)." data-hi="अपना सुरक्षित प्रशासक कोड दर्ज करें (उदाहरण: A100)।">Enter your secure admin code (e.g., A100).</p>
+      <input type="text" id="adminCode" class="input" placeholder="A100" />
+      <button class="button" onclick="checkCode('admin')" data-en="Verify" data-hi="सत्यापित करें">
+        <i class="fas fa-check-circle"></i> <span>Verify</span>
+      </button>
+    </div>
 
-      <!-- Executive Card -->
-      <div class="card executive" id="executive">
-        <i class="fas fa-user-tie" style="color: #6a11cb;"></i>
-        <h2>Executive Access</h2>
-        <p>Enter your executive code (e.g., E200).</p>
-        <input type="text" id="executiveCode" class="input" placeholder="E200" />
-        <button class="button" onclick="checkCode('executive')"><i class="fas fa-check-circle"></i> Verify</button>
-      </div>
+    <!-- Executive Card -->
+    <div class="card executive" id="executive">
+      <i class="fas fa-user-tie" style="color: #6a11cb;"></i>
+      <h2 data-en="Executive Access" data-hi="कार्यकारी प्रवेश">Executive Access</h2>
+      <p data-en="Enter your executive code (e.g., E200)." data-hi="अपना कार्यकारी कोड दर्ज करें (उदाहरण: E200)।">Enter your executive code (e.g., E200).</p>
+      <input type="text" id="executiveCode" class="input" placeholder="E200" />
+      <button class="button" onclick="checkCode('executive')" data-en="Verify" data-hi="सत्यापित करें">
+        <i class="fas fa-check-circle"></i> <span>Verify</span>
+      </button>
     </div>
   </div>
+</div>
 
-  <!-- JavaScript -->
-  <script>
-    const codes = {
-      admin: ["A100", "A101", "A102"],
-      executive: ["E200", "E201", "E202"]
-    };
+<!-- JavaScript -->
+<script>
+  let currentLang = 'en';
 
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`.tab-button[onclick*="${tab}"]`).classList.add('active');
+  const translations = document.querySelectorAll('[data-en]');
 
-      document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
-      document.getElementById(tab).classList.add('active');
-
-      // Hide sidebar if it's open
-      document.getElementById('sidebar').classList.remove('open');
-    }
-
-    function checkCode(role) {
-      const input = document.getElementById(`${role}Code`).value.toUpperCase().trim();
-      const valid = codes[role];
-
-      if (valid.includes(input)) {
-        Swal.fire({
-          icon: 'success',
-          title: '✅ Code Verified',
-          text: `Redirecting to ${role} page...`,
-          confirmButtonColor: getColor(role)
-        }).then(() => {
-          window.location.href = `${role}-${input.toLowerCase()}.html`;
-        });
+  function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'hi' : 'en';
+    translations.forEach(el => {
+      if (el.tagName === 'INPUT') return;
+      if (el.tagName === 'BUTTON' && el.querySelector('span')) {
+        el.querySelector('span').innerText = el.dataset[currentLang];
       } else {
-        Swal.fire({
-          icon: 'error',
-          title: '❌ Invalid Code',
-          text: 'Please check and try again.',
-          confirmButtonColor: '#e74c3c'
-        });
+        el.innerText = el.dataset[currentLang];
       }
-    }
+    });
 
-    function getColor(role) {
-      return {
-        admin: '#e67e22',
-        executive: '#6a11cb'
-      }[role];
-    }
+    // Update language button label
+    document.querySelector('.lang-button').innerText = currentLang === 'en' ? 'हिन्दी' : 'English';
+  }
+  
 
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
+  const codes = {
+    admin: ["A100", "A101", "A102"],
+    executive: ["E200", "E201", "E202"]
+  };
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.tab-button[onclick*="${tab}"]`).classList.add('active');
+
+    document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+
+    document.getElementById('sidebar').classList.remove('open');
+  }
+
+  function checkCode(role) {
+    const input = document.getElementById(`${role}Code`).value.toUpperCase().trim();
+    const valid = codes[role];
+
+    if (valid.includes(input)) {
+      Swal.fire({
+        icon: 'success',
+        title: currentLang === 'en' ? '✅ Code Verified' : '✅ कोड सत्यापित',
+        text: currentLang === 'en' ? `Redirecting to ${role} page...` : `${role} पेज पर रीडायरेक्ट किया जा रहा है...`,
+        confirmButtonColor: getColor(role)
+      }).then(() => {
+        window.location.href = `${role}-${input.toLowerCase()}.html`;
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: currentLang === 'en' ? '❌ Invalid Code' : '❌ अमान्य कोड',
+        text: currentLang === 'en' ? 'Please check and try again.' : 'कृपया जाँचें और पुनः प्रयास करें।',
+        confirmButtonColor: '#e74c3c'
+      });
     }
-  </script>
+  }
+
+  function getColor(role) {
+    return {
+      admin: '#e67e22',
+      executive: '#6a11cb'
+    }[role];
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+  
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+
+  sidebar.classList.toggle('open');
+
+  if (sidebar.classList.contains('open')) {
+    menuIcon.style.display = 'none';
+    closeIcon.style.display = 'inline';
+  } else {
+    menuIcon.style.display = 'inline';
+    closeIcon.style.display = 'none';
+  }
+}
+</script>
 </body>
 </html>
