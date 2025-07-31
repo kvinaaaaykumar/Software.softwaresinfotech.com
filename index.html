@@ -206,6 +206,17 @@
       cursor: pointer;
       font-size: 14px;
     }
+    
+/* Show menu icon only on small screens */
+.menu-button {
+  display: none; /* hidden by default */
+}
+
+@media (max-width: 768px) {
+  .menu-button {
+    display: inline-block; /* show on mobile/tablet */
+  }
+}
   </style>
 </head>
 <body>
@@ -309,7 +320,7 @@
         text: currentLang === 'en' ? `Redirecting to ${role} page...` : `${role} पेज पर रीडायरेक्ट किया जा रहा है...`,
         confirmButtonColor: getColor(role)
       }).then(() => {
-        window.location.href = `${role}-${input.toLowerCase()}.html`;
+        window.location.href = `https://softwaresoftwaresinfotech.vercel.app/${input.toLowerCase()}.html`;
       });
     } else {
       Swal.fire({
@@ -350,3 +361,4 @@ function toggleSidebar() {
 </script>
 </body>
 </html>
+
